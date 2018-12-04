@@ -421,7 +421,7 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
 
   //P0DIR = 0xFC; // Port 0 pins P0.0 and P0.1 as input (buttons),
   //              // all others (P0.2-P0.7) as output
-  P0DIR = 0x0A;  // P0.0 & P0.2 are unused so defined as output (all others are input)
+  P0DIR = 0x05;  // P0.0 & P0.2 are unused so defined as output (all others are input)
   P1DIR = 0xFF; // All port 1 pins (P1.0-P1.7) as output
   P2DIR = 0x1F; // All port 1 pins (P2.0-P2.4) as output
 
@@ -438,9 +438,12 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
 
   //P0DIR = 0xFC; // Port 0 pins P0.0 and P0.1 as input (buttons),
   //              // all others (P0.2-P0.7) as output
-  P0DIR = 0x0A;  // P0.0 & P0.2 are unused so defined as output (all others are input)
+  P0DIR = 0x05;  // P0.0 & P0.2 are unused so defined as output (all others are input)
   P1DIR = 0xFF; // All port 1 pins (P1.0-P1.7) as output
   P2DIR = 0x1F; // All port 1 pins (P2.0-P2.4) as output
+  
+  P0INP = 0x6F;
+  P2INP &= 0xDF;    
 
   //P0 = 0x03; // All pins on port 0 to low except for P0.0 and P0.1 (buttons)
   P0 = 0;   // All pins on port 0 to low 
