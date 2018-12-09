@@ -138,7 +138,13 @@ extern "C"
 #define LED5_SBIT                      P1_4
 #define LED5_DDR                       P1DIR
 #define LED5_POLARITY                  ACTIVE_LOW
-   
+  
+/* LED ON - ORANGE */
+#define LEDON_BV                        BV(5)
+#define LEDON_SBIT                      P1_5
+#define LEDON_DDR                       P1DIR
+#define LEDON_POLARITY                  ACTIVE_LOW
+  
 /* 6 - Battery Charge Control */
 #define LED6_BV                        BV(6)
 #define LED6_SBIT                      P1_6
@@ -311,6 +317,8 @@ It is meant to be used by TI only */
 
   #define HAL_TURN_OFF_LED6()       st( LED6_SBIT = LED6_POLARITY (0); )
   #define HAL_TURN_OFF_LED7()       st( LED7_SBIT = LED7_POLARITY (0); )
+  #define HAL_TURN_OFF_LEDON()       st( LEDON_SBIT = LEDON_POLARITY (0); )
+
 //  #define HAL_TURN_OFF_LED4()       HAL_TURN_OFF_LED1()
 
   #define HAL_TURN_ON_LED1()        st( LED1_SBIT = LED1_POLARITY (1); )
@@ -321,6 +329,7 @@ It is meant to be used by TI only */
 
   #define HAL_TURN_ON_LED6()        st( LED6_SBIT = LED6_POLARITY (1); )
   #define HAL_TURN_ON_LED7()        st( LED7_SBIT = LED7_POLARITY (1); )
+  #define HAL_TURN_ON_LEDON()        st( LEDON_SBIT = LEDON_POLARITY (1); )
 //  #define HAL_TURN_ON_LED4()        HAL_TURN_ON_LED1()
 
   #define HAL_TOGGLE_LED1()         st( if (LED1_SBIT) { LED1_SBIT = 0; } else { LED1_SBIT = 1;} )

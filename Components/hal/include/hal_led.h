@@ -72,9 +72,10 @@ extern "C"
 #define HAL_LED_3     0x04
 #define HAL_LED_4     0x08
 #define HAL_LED_5     0x10 
+#define HAL_LED_ON    0x20
 #define HAL_LED_6     0x40 // Battery Charge Control
 #define HAL_LED_7     0x80 // Wireless Charge Control  
-#define HAL_LED_ALL   (HAL_LED_1 | HAL_LED_2 | HAL_LED_3 | HAL_LED_4 | HAL_LED_5 | HAL_LED_6 | HAL_LED_7)
+#define HAL_LED_ALL   (HAL_LED_1 | HAL_LED_2 | HAL_LED_3 | HAL_LED_4 | HAL_LED_5 | HAL_LED_6 | HAL_LED_7 | HAL_LED_ON)
 #define HAL_LEVEL_LED_ALL   (HAL_LED_1 | HAL_LED_2 | HAL_LED_3 | HAL_LED_4 | HAL_LED_5)
 
 /* Modes */

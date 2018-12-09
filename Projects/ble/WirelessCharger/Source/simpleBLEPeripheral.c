@@ -173,6 +173,8 @@ static uint8 indic_LED = 0x00;
 static uint16 CHARGE_STATE = 0;
 static uint16 LEDS_STATE = 0;
 
+static uint16 percent_leds_15sec_count = 0;
+
 // GAP - SCAN RSP data (max size = 31 bytes)
 static uint8 scanRspData[] =
 {
@@ -447,7 +449,7 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
 
   //P0 = 0x03; // All pins on port 0 to low except for P0.0 and P0.1 (buttons)
   P0 = 0;   // All pins on port 0 to low 
-  P1 = 0;   // All pins on port 1 to low
+  P1 = 0x3F;   //
   P2 = 0;   // All pins on port 2 to low
 #endif // #if defined( CC2540_MINIDK )
 
@@ -519,15 +521,19 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 //    {
 //      i = 0x01;
 //    }  
+  
+  //HalLedBlink( HAL_LED_2, HAL_LED_DEFAULT_FLASH_COUNT, HAL_LED_DEFAULT_DUTY_CYCLE, HAL_LED_DEFAULT_FLASH_TIME );
 
   CellVoltage = getCellVoltage_mV();
   CellCurrent = getCellAverageCurrent_fmA();
   ToEmpty_min = getRemainingCapacity_mAh();
   percent     = getStateOfCharge_f();
+  percent = 3;
+  
+  static uint8 power_led_on = 0;
   
   if(indic_LED == 0x01)
-  {
-    
+  {    
     if(((uint8)percent)> 85)
     {
       //HalLedSet( (HAL_LED_ALL&0x3F), HAL_LED_MODE_OFF );
@@ -557,7 +563,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
     {
       HalLedSet( (HAL_LEVEL_LED_ALL), HAL_LED_MODE_OFF );
       HalLedBlink( HAL_LED_1, HAL_LED_DEFAULT_FLASH_COUNT, HAL_LED_DEFAULT_DUTY_CYCLE, HAL_LED_DEFAULT_FLASH_TIME );
-      HAL_LED_BLINK_DELAY();
+     // HAL_LED_BLINK_DELAY(); // Cause BLE connection to DROP!!!
     }    
   }
   
@@ -565,7 +571,13 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
   {
     HalLedSet( (HAL_LEVEL_LED_ALL), HAL_LED_MODE_OFF );
   }
-
+  
+  
+  if (power_led_on == 0)
+  {
+    HalLedBlink( HAL_LED_ON, 0, HAL_LED_DEFAULT_DUTY_CYCLE, 2000 );
+    power_led_on = 1;
+  }
   
   if ( events & SYS_EVENT_MSG )
   {
@@ -909,12 +921,42 @@ static void peripheralStateNotificationCB( gaprole_States_t newState )
  *
  * @return  none
  */
+
+#define HAL_LED_ON_BLINK_DELAY()   st( { volatile uint32 i; for (i=0; i<0x2000; i++) { }; } )
+
 static void performPeriodicTask( void )
 {
   uint8 valueToCopy;
   uint8 stat;
   uint8 sendValue = (uint8)percent;
   uint8 sendValue_2 = 0x68;
+  
+  static uint8 led_on_state = 0;
+  
+#ifdef 0
+  if (led_on_state == 0)
+  {
+    HalLedSet( HAL_LED_ON, HAL_LED_MODE_ON );
+    //HAL_LED_ON_BLINK_DELAY();
+    //HalLedSet( HAL_LED_ON, HAL_LED_MODE_OFF );
+      
+    led_on_state++;
+  }
+  else if (led_on_state == 1)
+  {
+    HalLedSet( HAL_LED_ON, HAL_LED_MODE_OFF );
+      
+    led_on_state++;    
+  }
+  else
+  {
+    if (led_on_state > 4)
+      led_on_state = 0;
+    else
+      led_on_state++;
+      
+  }
+#endif
   
   SimpleProfile_SetParameter( SIMPLEPROFILE_CHAR2, sizeof( uint8 ), &sendValue );
   
@@ -944,6 +986,14 @@ static void performPeriodicTask( void )
   }
   */
   
+  if (indic_LED == 0x01)
+  {
+    percent_leds_15sec_count++;
+    if (percent_leds_15sec_count == 30)
+      indic_LED = 0x00;
+  }
+  else
+    percent_leds_15sec_count = 0; 
 
   // Call to retrieve the value of the third characteristic in the profile
   stat = SimpleProfile_GetParameter( SIMPLEPROFILE_CHAR3, &valueToCopy);
