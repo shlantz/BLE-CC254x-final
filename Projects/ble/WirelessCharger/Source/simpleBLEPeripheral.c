@@ -528,7 +528,6 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
   CellCurrent = getCellAverageCurrent_fmA();
   ToEmpty_min = getRemainingCapacity_mAh();
   percent     = getStateOfCharge_f();
-  percent = 3;
   
   static uint8 power_led_on = 0;
   
@@ -1088,10 +1087,6 @@ static void simpleProfileChangeCB( uint8 paramID )
 
     case SIMPLEPROFILE_CHAR3:
       SimpleProfile_GetParameter( SIMPLEPROFILE_CHAR3, &newValue );
-
-      #if (defined HAL_LCD) && (HAL_LCD == TRUE)
-        HalLcdWriteStringValue( "Char 3:", (uint16)(newValue), 10,  HAL_LCD_LINE_3 );
-      #endif // (defined HAL_LCD) && (HAL_LCD == TRUE)
 
       break;
 

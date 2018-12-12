@@ -337,7 +337,7 @@ static gattAttribute_t simpleProfileAttrTbl[SERVAPP_NUM_ATTR_SUPPORTED] =
       // Characteristic Value 5
       { 
         { ATT_BT_UUID_SIZE, simpleProfilechar5UUID },
-        GATT_PERMIT_AUTHEN_READ, 
+        GATT_PERMIT_READ, 
         0, 
         simpleProfileChar5 
       },
@@ -664,9 +664,13 @@ static bStatus_t simpleProfile_ReadAttrCB( uint16 connHandle, gattAttribute_t *p
       //   can be sent as a notification, it is included here
       case SIMPLEPROFILE_CHAR1_UUID:
         *pLen = 1;
-        pValue[0] = P0;        
+        //pValue[0] = P0;   
+        pValue[0] = *pAttr->pValue;
         break;
       case SIMPLEPROFILE_CHAR2_UUID:
+        *pLen = 1;
+        pValue[0] = P0;        
+        break;
       case SIMPLEPROFILE_CHAR4_UUID:
         *pLen = 1;
         pValue[0] = *pAttr->pValue;
