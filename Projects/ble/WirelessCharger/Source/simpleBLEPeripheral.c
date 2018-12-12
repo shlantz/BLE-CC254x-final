@@ -930,7 +930,7 @@ static void performPeriodicTask( void )
   uint8 sendValue = (uint8)percent;
   uint8 sendValue_2 = 0x68;
   
-  static uint8 led_on_state = 0;
+  //static uint8 led_on_state = 0;
   
 #ifdef 0
   if (led_on_state == 0)
